@@ -1,0 +1,198 @@
+================================================================================
+ZENLANG — FORMAL LANGUAGE SPECIFICATION
+================================================================================
+Language Name : ZenLang
+File Extension: .zl
+Version       : 1.0
+Date          : February 2026
+
+================================================================================
+1. LEXICAL GRAMMAR
+================================================================================
+
+1.1 KEYWORDS
+------------
+KEYWORD ::= "start" | "finish" | "loop" | "condition" | "declare"
+          | "output" | "input" | "function" | "return" | "break"
+          | "continue" | "else"
+
+Note: Keywords are case-sensitive and must match exactly.
+
+
+1.2 IDENTIFIERS
+---------------
+IDENTIFIER ::= UPPER (LOWER | DIGIT | "_")*
+
+  UPPER ::= [A-Z]
+  LOWER ::= [a-z]
+  DIGIT ::= [0-9]
+
+Constraints:
+  - First character must be an uppercase letter (A–Z)
+  - Remaining characters: lowercase letters, digits, underscores
+  - Maximum total length: 31 characters
+  - Must not be a reserved keyword
+
+
+1.3 LITERALS
+------------
+
+INT_LITERAL  ::= SIGN? DIGIT+
+  SIGN ::= "+" | "-"
+
+REAL_LITERAL ::= SIGN? DIGIT+ "." DIGIT{1,6} EXPONENT?
+  EXPONENT ::= ("e" | "E") SIGN? DIGIT+
+
+TEXT_LITERAL ::= '"' TEXT_CHAR* '"'
+  TEXT_CHAR  ::= <any char except '"', '\', newline> | ESCAPE_SEQ
+  ESCAPE_SEQ ::= '\"' | '\\' | '\n' | '\t' | '\r'
+
+CHAR_LITERAL ::= "'" CHAR_CONTENT "'"
+  CHAR_CONTENT ::= <any char except "'", '\', newline> | ESCAPE_SEQ
+
+BOOL_LITERAL ::= "true" | "false"
+
+
+1.4 OPERATORS
+-------------
+
+ARITH_OP    ::= "**" | "+" | "-" | "*" | "/" | "%"
+RELATIONAL_OP ::= "==" | "!=" | "<=" | ">=" | "<" | ">"
+LOGICAL_OP  ::= "&&" | "||" | "!"
+ASSIGN_OP   ::= "=" | "+=" | "-=" | "*=" | "/=" | "%="
+INC_OP      ::= "++"
+DEC_OP      ::= "--"
+
+
+1.5 DELIMITERS
+--------------
+DELIMITER ::= "(" | ")" | "{" | "}" | "[" | "]" | "," | ";" | ":"
+
+
+1.6 COMMENTS
+------------
+LINE_COMMENT  ::= "##" <any char except newline>* NEWLINE?
+BLOCK_COMMENT ::= "#*" <any content> "*#"
+
+
+1.7 WHITESPACE
+--------------
+SPACE | TAB | NEWLINE | CARRIAGE_RETURN  (skipped; line numbers tracked)
+
+
+================================================================================
+2. SYNTACTIC GRAMMAR
+================================================================================
+
+Program         ::= FunctionDef* MainBlock
+
+MainBlock       ::= "start" StmtList "finish"
+
+FunctionDef     ::= "start" "function" IDENTIFIER "(" ParamList? ")"
+                    StmtList
+                    "finish"
+
+ParamList       ::= IDENTIFIER ("," IDENTIFIER)*
+
+StmtList        ::= Stmt*
+
+Stmt            ::= DeclStmt | AssignStmt | InputStmt | OutputStmt
+                  | CondStmt  | LoopStmt  | ReturnStmt
+                  | BreakStmt | ContinueStmt | FuncCallStmt
+
+DeclStmt        ::= "declare" IDENTIFIER ("[" INT_LITERAL "]")? ("=" Expr)?
+
+AssignStmt      ::= IDENTIFIER ("[" Expr "]")? (ASSIGN_OP | INC_OP | DEC_OP) Expr?
+
+InputStmt       ::= "input" IDENTIFIER
+
+OutputStmt      ::= "output" Expr ("," Expr)*
+
+CondStmt        ::= "condition" "(" Expr ")" StmtList ("else" StmtList)? "finish"
+
+LoopStmt        ::= "loop" "(" Expr ")" StmtList "finish"
+
+FuncCallStmt    ::= IDENTIFIER "(" ArgList? ")"
+
+ReturnStmt      ::= "return" Expr?
+
+BreakStmt       ::= "break"
+
+ContinueStmt    ::= "continue"
+
+ArgList         ::= Expr ("," Expr)*
+
+
+================================================================================
+3. EXPRESSIONS (with precedence, highest first)
+================================================================================
+
+Expr          ::= AssignExpr
+AssignExpr    ::= OrExpr (ASSIGN_OP OrExpr)*
+OrExpr        ::= AndExpr ("||" AndExpr)*
+AndExpr       ::= EqExpr ("&&" EqExpr)*
+EqExpr        ::= RelExpr (("==" | "!=") RelExpr)*
+RelExpr       ::= AddExpr (("<" | ">" | "<=" | ">=") AddExpr)*
+AddExpr       ::= MulExpr (("+" | "-") MulExpr)*
+MulExpr       ::= ExpExpr (("*" | "/" | "%") ExpExpr)*
+ExpExpr       ::= UnaryExpr ("**" UnaryExpr)*
+UnaryExpr     ::= ("!" | "+" | "-")? PrimaryExpr
+PrimaryExpr   ::= IDENTIFIER ("[" Expr "]")?
+                | INT_LITERAL | REAL_LITERAL | TEXT_LITERAL
+                | CHAR_LITERAL | BOOL_LITERAL
+                | IDENTIFIER "(" ArgList? ")"
+                | "(" Expr ")"
+
+
+================================================================================
+4. OPERATOR PRECEDENCE TABLE
+================================================================================
+
+Level | Operators              | Associativity | Description
+------|------------------------|---------------|------------------
+  1   | **                     | Right         | Exponentiation
+  2   | ! + - (unary)          | Right         | Unary
+  3   | * / %                  | Left          | Multiplicative
+  4   | + - (binary)           | Left          | Additive
+  5   | < > <= >=              | Left          | Relational
+  6   | == !=                  | Left          | Equality
+  7   | &&                     | Left          | Logical AND
+  8   | ||                     | Left          | Logical OR
+  9   | = += -= *= /= %=       | Right         | Assignment
+
+
+================================================================================
+5. TOKEN MATCHING PRIORITY
+================================================================================
+
+ 1. Block comments   #* ... *#
+ 2. Line comments    ## ...
+ 3. Multi-char ops   ** == != <= >= && || ++ -- += -= *= /= %=
+ 4. Keywords
+ 5. Boolean literals true | false
+ 6. Identifiers
+ 7. Real literals
+ 8. Integer literals
+ 9. Text (string) literals
+10. Character literals
+11. Single-char operators
+12. Delimiters
+13. Whitespace
+
+
+================================================================================
+6. ERROR CATEGORIES
+================================================================================
+
+INVALID_CHAR        — character not in the ZenLang alphabet
+BAD_NUMBER          — malformed numeric literal
+BAD_IDENTIFIER      — identifier violates naming rules
+UNTERMINATED_STRING — string literal not closed before newline/EOF
+UNTERMINATED_CHAR   — character literal not closed
+UNTERMINATED_COMMENT— block comment not closed before EOF
+BAD_ESCAPE          — invalid escape sequence in string/char literal
+
+
+================================================================================
+END OF SPECIFICATION
+================================================================================
