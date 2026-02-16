@@ -1,0 +1,119 @@
+## test2.zl  —  Complex Expressions and Nested Structures
+
+## Fibonacci sequence using a loop
+start function Fibonacci(N)
+    declare A = 0
+    declare B = 1
+    declare Temp = 0
+    declare Idx = 0
+
+    condition (N <= 0)
+        return 0
+    finish
+
+    loop (Idx < N)
+        Temp = A + B
+        A = B
+        B = Temp
+        Idx++
+    finish
+
+    return A
+finish
+
+## Bubble sort on a fixed array
+start function Sort_array(Arr, Size)
+    declare I = 0
+    declare J = 0
+    declare Swapped = true
+    declare Tmp = 0
+
+    loop (I < Size && Swapped)
+        Swapped = false
+        J = 0
+        loop (J < Size - 1)
+            condition (Arr[J] > Arr[J + 1])
+                Tmp = Arr[J]
+                Arr[J] = Arr[J + 1]
+                Arr[J + 1] = Tmp
+                Swapped = true
+            finish
+            J++
+        finish
+        I++
+    finish
+
+    return Arr
+finish
+
+start
+    ## Complex arithmetic expressions
+    declare X = +100
+    declare Y = -50
+    declare Z = +25
+
+    ## Operator precedence test
+    declare Expr1 = X + Y * Z - (X / 2)
+    declare Expr2 = X ** 2 + Y ** 2
+    declare Expr3 = (X + Y) * (X - Y)
+
+    ## Chained relational and logical
+    condition (X > 0 && Y < 0 && Z != 0)
+        output "Mixed signs detected"
+    finish
+
+    condition (Expr1 >= 0 || Expr2 <= 1000)
+        output "Condition satisfied"
+    finish
+
+    ## Compound assignment chain
+    X += 10
+    Y -= 5
+    Z *= 2
+    X /= 3
+    Y %= 7
+
+    ## Increment / decrement in expressions
+    X++
+    Y--
+    X++
+
+    ## Nested loops with break/continue
+    declare Outer = 0
+    declare Inner = 0
+    loop (Outer < 5)
+        Inner = 0
+        loop (Inner < 5)
+            condition (Inner == Outer)
+                Inner++
+                continue
+            finish
+            condition (Inner > 3)
+                break
+            finish
+            Inner++
+        finish
+        Outer++
+    finish
+
+    ## Function calls in expressions
+    declare Fib10 = Fibonacci(10)
+    declare Fib20 = Fibonacci(20)
+    declare Diff  = Fib20 - Fib10
+
+    output "Fib(10) = ", Fib10
+    output "Fib(20) = ", Fib20
+    output "Difference = ", Diff
+
+    ## Real number operations
+    declare Pi    = 3.141593
+    declare Euler = 2.718282
+    declare Ratio = Pi / Euler
+    declare Small = 1.0e-6
+    declare Large = 9.99999e+12
+
+    condition (Ratio > 1.0)
+        output "Pi > e"
+    finish
+
+finish

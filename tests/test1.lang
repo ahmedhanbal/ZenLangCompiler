@@ -1,0 +1,108 @@
+## test1.zl  —  All Valid Token Types
+## Demonstrates every token category the ZenLang lexer can recognise
+
+## ── Function definition ──────────────────────────────────────────────────
+start function Compute_power(Base, Exponent)
+    declare Result = 1
+    declare Counter = 0
+
+    loop (Counter < Exponent)
+        Result = Result * Base
+        Counter++
+    finish
+
+    return Result
+finish
+
+## ── Main block ───────────────────────────────────────────────────────────
+start
+    ## Integer and real literals
+    declare Width  = 15
+    declare Height = 8
+    declare Pi     = 3.14159
+    declare Radius = 2.5e1
+
+    ## Boolean literals
+    declare Is_valid  = true
+    declare Is_closed = false
+
+    ## String and character literals
+    declare Greeting  = "Hello, ZenLang!"
+    declare Initial   = 'Z'
+
+    ## Arithmetic operators: + - * / % **
+    declare Area      = Width * Height
+    declare Perimeter = 2 * (Width + Height)
+    declare Remainder = Width % 3
+    declare Power_val = Compute_power(2, 8)
+
+    ## Relational operators
+    condition (Width >= Height)
+        output "Width is at least as large as Height"
+    finish
+
+    condition (Area != 0)
+        output "Non-zero area"
+    finish
+
+    ## Logical operators
+    condition (Is_valid && !Is_closed)
+        output "Object is valid and open"
+    finish
+
+    condition (Is_valid || Is_closed)
+        output "At least one condition is true"
+    finish
+
+    ## Assignment operators
+    Width  += 5
+    Height -= 2
+    Area   *= 2
+    Pi     /= 1.0
+
+    ## Increment and decrement
+    Width++
+    Height--
+
+    ## Array usage
+    declare Scores[5]
+    Scores[0] = 100
+    Scores[1] = 95
+
+    ## Nested condition
+    condition (Width > 0)
+        condition (Height > 0)
+            output "Both dimensions positive"
+        else
+            output "Height is non-positive"
+        finish
+    finish
+
+    ## Input / output
+    input Width
+    output "Final width: ", Width
+
+    ## Escape sequences in strings
+    declare Tab_demo   = "Column1\tColumn2"
+    declare Newline_demo = "Line1\nLine2"
+    declare Quote_demo = "She said \"ZenLang\""
+    declare Path_demo  = "C:\\Projects\\ZenLang"
+
+    ## Escaped character literal
+    declare Newline_char = '\n'
+
+    ## break and continue
+    declare Idx = 0
+    loop (Idx < 10)
+        Idx++
+        condition (Idx == 3)
+            continue
+        finish
+        condition (Idx == 7)
+            break
+        finish
+    finish
+
+finish
+
+## End of test1.zl
