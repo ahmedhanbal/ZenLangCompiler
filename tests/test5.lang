@@ -1,0 +1,60 @@
+## test5.zl  —  Comment Processing
+## Tests single-line and block comments in various positions
+
+## This is a single-line comment at the top of the file
+
+#* 
+   This is a block comment at the top.
+   It spans multiple lines.
+   The scanner should skip all of this.
+*#
+
+start
+
+    ## Inline comment after a statement
+    declare X = 42    ## X holds the answer
+
+    ## Comment between declarations
+    declare Y = 100
+
+    #* Block comment between statements
+       Y is used below *#
+
+    declare Z = X + Y   ## Z = 142
+
+    ## Comments inside a loop
+    loop (X > 0)
+        ## Decrement X each iteration
+        X--    ## X decreases by 1
+        #* 
+           This block comment is inside the loop.
+           It should be completely ignored.
+        *#
+        condition (X == 20)
+            break   ## exit when X reaches 20
+        finish
+    finish
+
+    ## Comment before output
+    output "Z = ", Z   ## print Z
+
+    #* 
+       Multi-line block comment before finish.
+       Contains keywords like start finish loop
+       that should NOT be tokenised because they are inside a comment.
+       Also contains operators: + - * / == != <= >=
+       And identifiers: Alpha Beta Gamma
+    *#
+
+    ## Single-line comment with special characters: @$#%^&*()
+    ## Another comment: "strings inside comments are ignored"
+    ## Nested ## hashes inside a line comment
+
+    declare Result = Z * 2   ## final result
+
+    output Result
+
+finish   ## end of main block
+
+## Final comment at end of file
+## The scanner should have processed all comments correctly

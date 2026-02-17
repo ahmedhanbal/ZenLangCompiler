@@ -1,0 +1,73 @@
+## test4.zl  —  Lexical Errors (intentional)
+## The scanner should detect all errors and continue scanning
+
+start
+    ## ── Invalid characters ────────────────────────────────────────────────
+    declare Price@ = 99          ## @ is not in the ZenLang alphabet
+    declare Code$  = 42          ## $ is not in the ZenLang alphabet
+    declare Flag^  = true        ## ^ is not in the ZenLang alphabet
+
+    ## ── Identifiers starting with lowercase (invalid) ─────────────────────
+    declare count  = 0           ## must start with uppercase
+    declare myVar  = 10          ## must start with uppercase
+    declare result = 5           ## must start with uppercase
+
+    ## ── Identifier too long (> 31 chars) ─────────────────────────────────
+    declare This_identifier_is_way_too_long_for_zenlang = 100
+
+    ## ── Malformed real literals ───────────────────────────────────────────
+    declare Bad_real_1 = 3.14.15   ## two decimal points
+    declare Bad_real_2 = 1.2.3     ## multiple decimals
+
+    ## ── Missing fractional part ───────────────────────────────────────────
+    declare No_frac = 7.           ## digit required after '.'
+
+    ## ── Too many fractional digits (> 6) ─────────────────────────────────
+    declare Over_precise = 1.1234567   ## 7 decimal digits
+    declare Way_precise  = 3.14159265  ## 8 decimal digits
+
+    ## ── Bad exponent ──────────────────────────────────────────────────────
+    declare Bad_exp_1 = 2.5e        ## no digits after 'e'
+    declare Bad_exp_2 = 1.0E-       ## no digits after sign
+
+    ## ── Unterminated string literals ──────────────────────────────────────
+    declare Open_str = "This string is never closed
+    declare Good_after = 50
+
+    ## ── Unterminated character literals ──────────────────────────────────
+    declare Bad_ch1 = 'X
+    declare Bad_ch2 = '
+
+    ## ── Invalid escape sequences ──────────────────────────────────────────
+    declare Esc1 = "Bad \x escape"
+    declare Esc2 = "Another \b one"
+    declare Esc3 = '\q'
+
+    ## ── Newline inside string ─────────────────────────────────────────────
+    declare Multi_err = "This is
+    not allowed in a string"
+
+    ## ── Unclosed block comment ────────────────────────────────────────────
+    #* This block comment is never closed
+       The scanner should report this and continue
+
+    declare After_comment = 77
+
+    ## ── Invalid bitwise operators (not in ZenLang) ───────────────────────
+    declare Bitwise1 = 10 & 5     ## single & not valid
+    declare Bitwise2 = 10 | 5     ## single | not valid
+    declare Bitwise3 = ~10        ## ~ not valid
+
+    ## ── Valid code to verify error recovery ──────────────────────────────
+    declare Good_a = 100
+    declare Good_b = 200
+    declare Good_sum = Good_a + Good_b
+    output "Recovery check: ", Good_sum
+
+    condition (Good_a > 0)
+        output "Scanner recovered successfully"
+    finish
+
+finish
+
+## End of test4.zl  —  multiple errors, scanner must continue after each one

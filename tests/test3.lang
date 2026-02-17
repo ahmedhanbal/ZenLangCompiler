@@ -1,0 +1,65 @@
+## test3.zl  —  String and Character Literals with Escape Sequences
+
+start
+    ## ── Basic strings ────────────────────────────────────────────────────
+    declare Plain      = "Hello, World!"
+    declare Empty_str  = ""
+    declare Spaces_str = "   spaces   "
+
+    ## ── Escape sequences in strings ──────────────────────────────────────
+    ## Newline escape
+    declare Newline_str = "First line\nSecond line"
+
+    ## Tab escape
+    declare Tab_str = "Name:\tAhmed\tScore:\t100"
+
+    ## Carriage return
+    declare Cr_str = "Windows\rline ending"
+
+    ## Escaped double-quote
+    declare Quote_str = "She said \"ZenLang is great!\""
+
+    ## Escaped backslash
+    declare Path_str  = "C:\\Users\\ZenLang\\Projects"
+    declare Path2_str = "D:\\Data\\test.zl"
+
+    ## Combined escapes
+    declare Mixed_str = "Tab:\t\"Quoted\"\nNewline above"
+
+    ## ── Character literals ────────────────────────────────────────────────
+    declare Letter_a  = 'a'
+    declare Letter_z  = 'Z'
+    declare Digit_5   = '5'
+    declare Space_ch  = ' '
+    declare Under_ch  = '_'
+
+    ## Escaped character literals
+    declare Newline_ch = '\n'
+    declare Tab_ch     = '\t'
+    declare Cr_ch      = '\r'
+    declare Quote_ch   = '\''
+    declare Slash_ch   = '\\'
+
+    ## ── Strings with special content ──────────────────────────────────────
+    declare Json_like  = "{\"key\": \"value\", \"num\": 42}"
+    declare Code_str   = "declare X = 10\ndeclare Y = 20"
+    declare Url_str    = "https:\\\\zenlang.example.com\\docs"
+
+    ## ── Output to verify ─────────────────────────────────────────────────
+    output Plain
+    output Newline_str
+    output Tab_str
+    output Quote_str
+    output Path_str
+    output Mixed_str
+
+    ## ── Strings used in conditions ────────────────────────────────────────
+    declare Mode = "debug"
+    condition (Letter_a == 'a')
+        output "Character match works"
+    finish
+
+    ## ── Long string ──────────────────────────────────────────────────────
+    declare Long_str = "This is a fairly long string that tests the scanner's ability to handle extended text content without issues."
+
+finish
