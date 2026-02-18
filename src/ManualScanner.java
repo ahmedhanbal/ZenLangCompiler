@@ -205,6 +205,7 @@ public class ManualScanner {
             if (src.charAt(pos) == '*' && lookahead(1) == '#') {
                 buf.append(eat()); // *
                 buf.append(eat()); // #
+                closed = true;
                 break;
             }
             buf.append(eat());
@@ -429,6 +430,7 @@ public class ManualScanner {
 
             if (ch == '"') {
                 buf.append(eat());
+                closed = true;
                 break;
             }
 
@@ -476,6 +478,7 @@ public class ManualScanner {
 
             if (ch == '\'') {
                 buf.append(eat());
+                closed = true;
                 break;
             }
 
