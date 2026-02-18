@@ -1,9 +1,0 @@
-*.class
-*.aux
-*.log
-*.out
-*.toc
-.DS_Store
-bak/
-reference/
-CC_Assignment_1_Spring_2026*

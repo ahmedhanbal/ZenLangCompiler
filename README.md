@@ -1,121 +1,106 @@
-# ZenLang — Lexical Analyser
+# ZenLang Lexical Analyser
 
-**Course:** CS4031 — Compiler Construction  
-**Assignment:** 01 — Lexical Analyser Implementation  
-**Language:** ZenLang | **Extension:** `.lang`
-
----
-
-## Team Members
-
-| Name | Roll Number |
-|------|-------------|
-| Ahmed Ali Zahid | 22i-1271 |
-| Asad Mehdi | 22i-1120 |
-
-**Section:** C
+**Members:**
+- **Ahmed Ali Zahid** (22i-1271)
+- **Asad Mehdi** (22i-1120)
 
 ---
 
-## Language Overview
+## 1. Language Overview
+**ZenLang** uses the extension `.lang`.
 
-ZenLang is a custom educational programming language designed to teach compiler construction concepts. It features a clean, keyword-driven syntax with strong typing conventions.
-
-### Keywords (12)
+### 1.1 Keywords & Meanings
+All keywords are reserved and case-sensitive.
 
 | Keyword | Meaning |
-|---------|---------|
-| `start` | Begin a block or function |
-| `finish` | End a block or function |
-| `loop` | While-style loop |
-| `condition` | If-statement |
-| `else` | Else branch |
+| :--- | :--- |
+| `start` | Entry point of program / function definition block start |
+| `finish` | End of program / block |
 | `declare` | Variable declaration |
-| `output` | Print to console |
-| `input` | Read from console |
-| `function` | Function declaration |
-| `return` | Return from function |
-| `break` | Exit loop early |
-| `continue` | Skip to next iteration |
+| `condition` | Conditional statement (if) |
+| `else` | Alternative conditional branch |
+| `loop` | Loop construct (while) |
+| `output` | Print statement |
+| `input` | Read statement |
+| `function` | Function definition marker |
+| `return` | Return value from function |
+| `break` | Exit loop immediately |
+| `continue` | Skip to next loop iteration |
 
-### Identifier Rules
+### 1.2 Identifiers
+- **Rule:** Must start with an **uppercase letter** (`A-Z`).
+- **Followed by:** Any combination of lowercase (`a-z`), digits (`0-9`), or underscore (`_`).
+- **Maximum Length:** 30 characters.
+- **Examples:** `Sum`, `My_Counter_1`, `Result`. (Invalid: `count`, `1var`, `_temp`).
 
-- **Must start with** an uppercase letter `A–Z`
-- **Followed by** zero or more: lowercase letters, digits, underscores
-- **Maximum length:** 31 characters
-- **Cannot** be a reserved keyword
-
-```
-Valid:   Count   Total_sum   X   Result_2024
-Invalid: count   _Var   2Count   myVariable
-```
-
-### Literals
-
+### 1.3 Literals
 | Type | Format | Examples |
-|------|--------|---------|
-| Integer | `[+-]?[0-9]+` | `42`, `-567`, `+100` |
-| Real | `[+-]?[0-9]+\.[0-9]{1,6}([eE][+-]?[0-9]+)?` | `3.14`, `1.5e10`, `-2.0E-3` |
-| Text (String) | `"..."` with escapes | `"Hello"`, `"Line1\nLine2"` |
-| Character | `'.'` with escapes | `'A'`, `'\n'`, `'\''` |
-| Boolean | `true` or `false` | `true`, `false` |
+| :--- | :--- | :--- |
+| **Integer** | Optional sign + digits | `0`, `123`, `-45`, `+99` |
+| **Float** | Optional sign + digits + dot + digits + opt exponent | `3.14`, `-0.001`, `1.2e-5`, `+6.0E+9` |
+| **Boolean** | `true` or `false` | `true`, `false` |
+| **String** | Double quotes, supports escapes `\n`, `\t` | `"Hello World"`, `"Val: \n"` |
+| **Char** | Single quotes, single char or escape | `'A'`, `'\n'`, `'\''` |
 
-**String/Char escape sequences:** `\"` `\\` `\n` `\t` `\r`
-
-### Operators
-
-| Category | Operators |
-|----------|-----------|
-| Arithmetic | `+` `-` `*` `/` `%` `**` |
-| Relational | `==` `!=` `<` `>` `<=` `>=` |
-| Logical | `&&` `\|\|` `!` |
-| Assignment | `=` `+=` `-=` `*=` `/=` `%=` |
-| Increment | `++` |
-| Decrement | `--` |
-
-### Comments
-
-```
-## This is a single-line comment
-
-#*
-   This is a
-   block comment
-*#
-```
+### 1.4 Comments
+- **Block Comment:** Starts with `#*` and ends with `*#`. Can span multiple lines.
+- **Line Comment:** Starts with `##` and extends to the end of the line.
 
 ---
 
-## Sample Programs
+## 2. Operators & Precedence
+Operators are listed from highest to lowest precedence (conceptually, though lexer emits tokens linearly).
 
-### 1. Hello World
+| Precedence | Operators | Description |
+| :--- | :--- | :--- |
+| 1 | `( ) [ ]` | Grouping, Array Indexing |
+| 2 | `++ --` | Increment, Decrement |
+| 3 | `**` | Exponentiation |
+| 4 | `* / %` | Multiplication, Division, Modulo |
+| 5 | `+ -` | Addition, Subtraction |
+| 6 | `< > <= >=` | Relational Comparisons |
+| 7 | `== !=` | Equality Tests |
+| 8 | `&&` | Logical AND |
+| 9 | `||` | Logical OR |
+| 10 | `! ` | Logical NOT |
+| 11 | `= += -= *= /= %=` | Assignment |
 
-```
+---
+
+## 3. Sample Programs
+
+### Sample 1: Hello World
+```lang
 start
+    #* This is a simple
+       hello world program *#
     output "Hello, ZenLang!"
 finish
 ```
 
-### 2. Sum of 1 to N
-
-```
+### Sample 2: Fibonacci Sequence
+```lang
 start
-    declare N = 10
-    declare Sum = 0
-    declare I = 1
+    declare Count = 10
+    declare T1 = 0
+    declare T2 = 1
+    declare Next = 0
 
-    loop (I <= N)
-        Sum += I
-        I++
+    output "Fibonacci Series:"
+
+    ## Loop to generate series
+    loop (Count > 0)
+        output T1
+        Next = T1 + T2
+        T1 = T2
+        T2 = Next
+        Count--
     finish
-
-    output "Sum = ", Sum
 finish
 ```
 
-### 3. Function with Recursion
-
-```
+### Sample 3: Factorial Calculation
+```lang
 start function Factorial(N)
     condition (N <= 1)
         return 1
@@ -124,87 +109,50 @@ start function Factorial(N)
 finish
 
 start
-    declare Result = Factorial(5)
-    output "5! = ", Result
+    declare Num = 5
+    declare Result = 0
+    Result = Factorial(Num)
+    output "Factorial of 5 is: "
+    output Result
 finish
 ```
 
 ---
 
-## Compilation & Execution
+## 4. Compilation & Execution
 
-### Manual Scanner (ManualScanner.java)
+### Prerequisites
+- Java JDK 8+
+- JFlex (tested with 1.8.2)
 
+### Build Instructions
+
+**1. Manual Scanner (Hand-coded DFA)**
 ```bash
 # Compile
 cd src
-javac TokenType.java Token.java SymbolTable.java ErrorHandler.java ManualScanner.java
-
-# Run on a test file
-java ManualScanner ../tests/test1.lang
-
-# Output includes: token stream, statistics, identifier table, errors
-```
-
-### JFlex Scanner
-
-```bash
-# Generate scanner from flex spec
-cd src
-jflex Scanner.flex        # generates Yylex.java
-
-# Compile everything
-javac *.java
+javac ManualScanner.java
 
 # Run
-java Yylex ../tests/test1.lang
+java ManualScanner ../tests/test1.lang
 ```
 
----
+**2. JFlex Scanner**
+```bash
+# Generate Lexer
+cd src
+jflex Scanner.flex
 
-## Project Structure
+# Compile
+javac JFlexScanner.java Yylex.java
 
-```
-├── src/
-│   ├── TokenType.java        # Token category enum
-│   ├── Token.java            # Token data class
-│   ├── SymbolTable.java      # Symbol/identifier tracking
-│   ├── ErrorHandler.java     # Error detection & reporting
-│   ├── ManualScanner.java    # Main DFA-based scanner
-│   ├── Scanner.flex          # JFlex specification
-│   └── Yylex.java            # Generated by JFlex (placeholder)
-├── docs/
-│   └── Automata_Design.pdf   # DFA diagrams & full report
-├── tests/
-│   ├── test1.lang            # All valid token types
-│   ├── test2.lang            # Complex expressions
-│   ├── test3.lang            # String/char escape sequences
-│   ├── test4.lang            # Lexical error cases
-│   ├── test5.lang            # Comment processing
-│   └── TestResults.txt       # Expected outputs
-├── README.md                 # Project overview
-└── LanguageGrammar.txt       # Formal grammar specification
+# Run
+java -cp . JFlexScanner ../tests/test1.lang
 ```
 
----
-
-## Test Files
-
-| File | Purpose |
-|------|---------|
-| `test1.lang` | All valid token types — no errors expected |
-| `test2.lang` | Complex nested expressions and functions |
-| `test3.lang` | String and character literals with escapes |
-| `test4.lang` | Intentional lexical errors — tests error recovery |
-| `test5.lang` | Comment processing (line and block) |
-
----
-
-## Implementation Notes
-
-- **DFA-based** token recognition with longest-match principle
-- **Pattern priority** strictly followed (block comments → line comments → multi-char ops → keywords → booleans → identifiers → reals → integers → strings → chars → single ops → delimiters → whitespace)
-- **Error recovery:** all errors logged, scanning continues to find all issues
-- **Line/column tracking** accurate for all token types including multi-line block comments
-- **Identifier table** tracks name, type (unknown until semantic phase), first occurrence, and occurrence count
-
+### File Structure
+- `src/ManualScanner.java`: Handwritten DFA implementation.
+- `src/Scanner.flex`: JFlex specification file.
+- `src/Yylex.java`: Generated scanner code.
+- `docs/Automata_Design.pdf`: DFA diagrams and design report.
+- `docs/Comparison.pdf`: Comparison of manual vs generated scanner outputs.
