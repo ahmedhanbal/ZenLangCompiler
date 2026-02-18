@@ -207,3 +207,4 @@ java Yylex ../tests/test1.lang
 - **Error recovery:** all errors logged, scanning continues to find all issues
 - **Line/column tracking** accurate for all token types including multi-line block comments
 - **Identifier table** tracks name, type (unknown until semantic phase), first occurrence, and occurrence count
+
